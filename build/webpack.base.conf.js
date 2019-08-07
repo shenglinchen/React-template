@@ -21,8 +21,8 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            title: "react 模板",
-            template: "./src/index.html"
+            title: "模板",
+            template: "./src/template/index.ejs"
         }),
         // 每个插件都会占用性能
         // new webpack.NamedModulesPlugin(),
@@ -59,7 +59,7 @@ module.exports = {
             
         }),
         new ForkTsCheckerWebpackPlugin({
-            // happyPack 时使用
+            // happyPack 时使用，在 hppyPack 时，不会进行 syntactic check，加上这个就会了
             checkSyntacticErrors: true
         })
     ],
