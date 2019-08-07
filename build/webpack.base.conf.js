@@ -6,6 +6,8 @@ const HappyPack = require('happypack')
 const os = require('os') // 用于获取系统 cpu 内核数
 // 使用线程共享池，压缩线程空闲时间
 const happyThreadPool = HappyPack.ThreadPool({size: os.cpus().length})
+// ts 检查
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 
 module.exports = {
     // entry: {
@@ -22,7 +24,8 @@ module.exports = {
             title: "react 模板",
             template: "./src/index.html"
         }),
-        new webpack.NamedModulesPlugin(),
+        // 每个插件都会占用性能
+        // new webpack.NamedModulesPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         new HappyPack({
             // id 需要和 loader 配置里面的 id 对应
@@ -41,7 +44,12 @@ module.exports = {
             loaders: [
                 { 
                     loader: 'ts-loader',
-                    options: { transpileOnly: true, happyPackMode: true }
+                    options: { 
+                        // 不进行静态类型检查，提升速度，需要使用  fork-ts-checker-webpack-plugin 来类型检查
+                        transpileOnly: true, 
+                        // 使用 happypack 进行编译提速
+                        happyPackMode: true 
+                    }
                 }
             ],
             //共享进程池
@@ -50,6 +58,10 @@ module.exports = {
             verbose: true,
             
         }),
+        new ForkTsCheckerWebpackPlugin({
+            // happyPack 时使用
+            checkSyntacticErrors: true
+        })
     ],
     module: {
         rules: [

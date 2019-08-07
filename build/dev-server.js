@@ -46,7 +46,7 @@ devMiddleware.waitUntilValid(() => {
     console.log(`linstening on ${config.dev.host}:${config.dev.port}`)
 })
 
-app.listen(9000, () => {
+app.listen(config.dev.port, () => {
     console.log("port", config.dev.port)
 })
 
