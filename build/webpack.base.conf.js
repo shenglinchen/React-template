@@ -8,6 +8,7 @@ const os = require('os') // 用于获取系统 cpu 内核数
 const happyThreadPool = HappyPack.ThreadPool({size: os.cpus().length})
 // ts 检查
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
+const ProgressBarPlugin = require('progress-bar-webpack-plugin')
 
 module.exports = {
     // entry: {
@@ -61,6 +62,9 @@ module.exports = {
         new ForkTsCheckerWebpackPlugin({
             // happyPack 时使用，在 hppyPack 时，不会进行 syntactic check，加上这个就会了
             checkSyntacticErrors: true
+        }),
+        new ProgressBarPlugin({
+            complete: "😡"
         })
     ],
     module: {
