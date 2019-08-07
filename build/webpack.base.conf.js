@@ -2,6 +2,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const path = require('path')
 const webpack = require('webpack')
 const utils = require('./utils')
+const config = require('../config')
 const HappyPack = require('happypack')
 const os = require('os') // 用于获取系统 cpu 内核数
 // 使用线程共享池，压缩线程空闲时间
@@ -22,8 +23,10 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            title: "模板",
-            template: "./src/template/index.ejs"
+            title: config.base.title,
+            template: path.join(__dirname, '..', "src/template/index.ejs"),
+            inject: true,
+            filename: 'index.html'
         }),
         // 每个插件都会占用性能
         // new webpack.NamedModulesPlugin(),

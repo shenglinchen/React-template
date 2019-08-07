@@ -6,7 +6,7 @@ const path = require('path')
 const config = require('../config')
 
 const app = express()
-const webpackConfig = require('./webpack.base.conf.js')
+const webpackConfig = require('./webpack.dev.conf.js')
 const compiler = webpack(webpackConfig)
 
 let devMiddleware = webpackDevMiddleware(compiler, {
