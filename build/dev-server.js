@@ -10,7 +10,8 @@ const webpackConfig = require('./webpack.dev.conf.js')
 const compiler = webpack(webpackConfig)
 
 let devMiddleware = webpackDevMiddleware(compiler, {
-    publicPath: webpackConfig.output.publicPath
+    publicPath: webpackConfig.output.publicPath,
+    logLevel: 'silent'
 })
 
 let hotMiddleware = webpackHotMiddleware(compiler, {
