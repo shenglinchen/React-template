@@ -11,5 +11,9 @@ module.exports = {
     assetsPath: (name) => {
         // 将路径和 name 拼接起来
         return path.resolve(config.base.assetsSubDirectory, name)
+    },
+    resolve: (name) => {
+        // 这里加上 .. ，是因为要先从 `dev-server.js` 出来到根目录
+        return path.join(__dirname, '..', name)
     }
 }

@@ -2,6 +2,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const path = require('path')
 const webpack = require('webpack')
 const utils = require('./utils')
+const HappyPack = require('happypack')
+const os = require('os') // 用于获取系统 cpu 内核数
+// 使用线程共享池，压缩线程空闲时间
+const happyThreadPool = HappyPack.ThreadPool({size: os.cpus().length})
 
 module.exports = {
     // entry: {
@@ -19,18 +23,46 @@ module.exports = {
             template: "./src/index.html"
         }),
         new webpack.NamedModulesPlugin(),
-        new webpack.HotModuleReplacementPlugin()
+        new webpack.HotModuleReplacementPlugin(),
+        new HappyPack({
+            // id 需要和 loader 配置里面的 id 对应
+            id: 'js',
+            loaders: [
+                {loader: 'babel-loader'}
+            ],
+            //共享进程池
+            threadPool: happyThreadPool,
+            //允许 HappyPack 输出日志
+            verbose: true,
+        }),
+        new HappyPack({
+            // id 需要和 loader 配置里面的 id 对应
+            id: 'tsx',
+            loaders: [
+                { 
+                    loader: 'ts-loader',
+                    options: { transpileOnly: true, happyPackMode: true }
+                }
+            ],
+            //共享进程池
+            threadPool: happyThreadPool,
+            //允许 HappyPack 输出日志
+            verbose: true,
+            
+        }),
     ],
     module: {
         rules: [
             {
                 test: /\.tsx$/,
-                use: "ts-loader",
+                // use: "ts-loader",
+                loader: 'happypack/loader?id=tsx',
                 exclude: /node_modules/
             }, {
                 test: /\.js$/,
                 exclude: /node_modules/,
-                loader: 'babel-loader',
+                // loader: 'babel-loader',
+                loader: 'happypack/loader?id=js'
             }, {
                 test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
                 loader: 'url-loader',
@@ -57,7 +89,15 @@ module.exports = {
         ]
     },
     resolve: {
-        extensions: ['.tsx', '.ts', '.js']
+        extensions: ['.tsx', '.ts', '.js', 'json'],
+        alias: {
+            '@src': utils.resolve('src'),
+            '@modules': utils.resolve('src/modules'),
+            '@components': utils.resolve('src/components'),
+            '@store': utils.resolve('src/store'),
+            '@style': utils.resolve('src/style'),
+            '@library': utils.resolve('src/library'),
+        }
     },
     devtool: 'inline-source-map'
 }
